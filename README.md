@@ -1,40 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 📋 Campus Notice Board
 
-## Getting Started
+A premium, responsive campus announcement hub built with Next.js (Pages Router), Prisma, and MariaDB (compatible with TiDB Cloud/MySQL). Notices are ordered on the database level to display Urgent notices at the top with a pulsing red badge, followed by newest announcements.
 
-First, run the development server:
+---
 
+## 🚀 How to Run the Project Locally
+
+### 1. Prerequisites
+Ensure you have [Node.js](https://nodejs.org) (v18 or higher) and `npm` installed.
+
+### 2. Clone and Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repository-url>
+cd notice-board
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Environment Configuration
+Create a `.env` file in the root directory and configure your connection credentials:
+```env
+# Connection URL for Prisma migrations & CLI (MySQL/MariaDB compatible)
+DATABASE_URL="mysql://<user>:<password>@<host>:<port>/<database_name>?sslaccept=strict"
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+# Credentials for the application-level MariaDB driver adapter
+DB_HOST="<database-host-address>"
+DB_PORT=4000
+DB_USER="<username>"
+DB_PASSWORD="<password>"
+DB_NAME="notice_board"
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 4. Code Compilation & Setup
+Generate the Prisma Client mapping based on the schema:
+```bash
+npx prisma generate
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+### 5. Running the Application
+Run the development server locally:
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ⚡ One Thing We Would Improve with More Time
 
-To learn more about Next.js, take a look at the following resources:
+If given more time, we would implement **native image uploads**. 
+Currently, the notice image is supported via an optional image URL field. Having direct integration with cloud storage (such as Vercel Blob or AWS S3) with drag-and-drop file inputs and client-side image compression would significantly elevate the user experience and prevent broken layout instances from invalid external URLs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+##  Where and How AI Was Used
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+An AI coding assistant (Antigravity) was used as a pair-programmer to build this project:
+1. **Troubleshooting Fixes**: Helped identify a connection pool issue where `@prisma/adapter-mariadb` was receiving a pre-created pool instance instead of a database credentials object, which caused a pool timeout during client-side hydration.
+2. **React Hydration Alignment**: Refactored the date formatting logic in `NoticeCard.tsx` to format calendar dates deterministically using UTC methods rather than relying on local system timezones. Added `mounted` conditional gates to the Live Preview rendering in `NoticeForm.tsx` to guarantee server-rendered HTML matches the client exactly, preventing Next.js SSR hydration mismatches.
+3. **Tailwind Component Assembly**: Aided in designing modern, responsive dashboard elements with interactive hover states, responsive flex grids, category color-themed tags, and custom deletion modals.
+4. **Server-Side Security Validation**: Assisted in structuring server-side validation checks on both the `POST` and `PUT` endpoints to sanitize user titles and bodies, validate dates, and assert input boundaries.
